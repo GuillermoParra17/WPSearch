@@ -1,0 +1,958 @@
+Here's the complete HTML code:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PI Finance · Board Engagement Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Figtree', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%);
+            color: #e8eaf0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-family: 'Poppins', 'Roboto', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 115, 234, 0.3);
+        }
+
+        h1 .board-name {
+            color: #0073ea;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #a0a4b8;
+            font-weight: 400;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(0, 115, 234, 0.1) 0%, rgba(0, 115, 234, 0.05) 100%);
+            border: 1px solid rgba(0, 115, 234, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 115, 234, 0.2);
+            border-color: rgba(0, 115, 234, 0.5);
+        }
+
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #0073ea;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 8px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: #a0a4b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .kpi-sublabel {
+            font-size: 12px;
+            color: #676879;
+            margin-top: 4px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #0073ea 0%, #00c875 100%);
+            border-radius: 2px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 350px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .users-table thead {
+            background: rgba(0, 115, 234, 0.1);
+        }
+
+        .users-table th {
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            color: #0073ea;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(0, 115, 234, 0.3);
+        }
+
+        .users-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .users-table tr {
+            transition: background 0.2s ease;
+        }
+
+        .users-table tbody tr:hover {
+            background: rgba(0, 115, 234, 0.05);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .user-role {
+            color: #a0a4b8;
+            font-size: 13px;
+        }
+
+        .activity-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .activity-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0073ea 0%, #00c875 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 4px;
+        }
+
+        .badge-primary {
+            background: rgba(0, 115, 234, 0.2);
+            color: #579bfc;
+            border: 1px solid rgba(0, 115, 234, 0.3);
+        }
+
+        .badge-success {
+            background: rgba(0, 200, 117, 0.2);
+            color: #00c875;
+            border: 1px solid rgba(0, 200, 117, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(255, 203, 0, 0.2);
+            color: #ffcb00;
+            border: 1px solid rgba(255, 203, 0, 0.3);
+        }
+
+        .returning-users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .returning-user-card {
+            background: rgba(0, 115, 234, 0.05);
+            border: 1px solid rgba(0, 115, 234, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .returning-user-card:hover {
+            background: rgba(0, 115, 234, 0.1);
+            border-color: rgba(0, 115, 234, 0.4);
+            transform: translateX(4px);
+        }
+
+        .returning-user-name {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        .months-badge {
+            background: linear-gradient(135deg, #0073ea 0%, #00c875 100%);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(0, 200, 117, 0.1) 0%, rgba(0, 200, 117, 0.05) 100%);
+            border: 1px solid rgba(0, 200, 117, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '💡';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 32px;
+            opacity: 0.3;
+        }
+
+        .insight-text {
+            font-size: 15px;
+            color: #e8eaf0;
+            line-height: 1.6;
+        }
+
+        .caveat-section {
+            background: linear-gradient(135deg, rgba(255, 203, 0, 0.1) 0%, rgba(255, 203, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 203, 0, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 30px;
+        }
+
+        .caveat-section h3 {
+            color: #ffcb00;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .caveat-section h3::before {
+            content: '⚠️';
+            font-size: 20px;
+        }
+
+        .caveat-text {
+            color: #d0d4e4;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .event-split {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .event-split-card {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .event-split-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .event-split-value.human {
+            color: #00c875;
+        }
+
+        .event-split-value.automated {
+            color: #9d50dd;
+        }
+
+        .event-split-label {
+            font-size: 14px;
+            color: #a0a4b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .event-split-percent {
+            font-size: 12px;
+            color: #676879;
+            margin-top: 4px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #676879;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="board-name">PI Finance</span> · Board Engagement Report</h1>
+            <p class="subtitle">Jan – Jul 2026 | Powered by monday.com Activity Logs</p>
+            <p class="subtitle" style="margin-top: 8px; font-weight: 600; color: #0073ea;">PI_Finance Work Package Overview</p>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">1,000</div>
+                <div class="kpi-label">Total Events</div>
+                <div class="kpi-sublabel">Jan – Jul 29, 2026</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">16</div>
+                <div class="kpi-label">Active Users</div>
+                <div class="kpi-sublabel">Across 7 months</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">5</div>
+                <div class="kpi-label">Returning Users</div>
+                <div class="kpi-sublabel">Active 2+ months</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">April</div>
+                <div class="kpi-label">Peak Month</div>
+                <div class="kpi-sublabel">314 events</div>
+            </div>
+        </div>
+
+        <!-- Event Split -->
+        <div class="section">
+            <h2>Event Distribution</h2>
+            <div class="event-split">
+                <div class="event-split-card">
+                    <div class="event-split-value human">865</div>
+                    <div class="event-split-label">Human Events</div>
+                    <div class="event-split-percent">86.5% of total</div>
+                </div>
+                <div class="event-split-card">
+                    <div class="event-split-value automated">135</div>
+                    <div class="event-split-label">Automated Events</div>
+                    <div class="event-split-percent">13.5% of total</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-title">Monthly Activity Trend</div>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Feature Usage Distribution</div>
+                <canvas id="featureChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container" style="margin-bottom: 30px;">
+            <div class="chart-title">Top Users by Actions</div>
+            <canvas id="usersChart"></canvas>
+        </div>
+
+        <!-- Returning Users -->
+        <div class="section">
+            <h2>Returning Users (Active 2+ Months)</h2>
+            <div class="returning-users-grid">
+                <div class="returning-user-card">
+                    <div class="returning-user-name">Christine Penullar</div>
+                    <div class="months-badge">5 months</div>
+                </div>
+                <div class="returning-user-card">
+                    <div class="returning-user-name">Martin Hartmann</div>
+                    <div class="months-badge">4 months</div>
+                </div>
+                <div class="returning-user-card">
+                    <div class="returning-user-name">Alessandro Ardito</div>
+                    <div class="months-badge">3 months</div>
+                </div>
+                <div class="returning-user-card">
+                    <div class="returning-user-name">Tobias Auer</div>
+                    <div class="months-badge">2 months</div>
+                </div>
+                <div class="returning-user-card">
+                    <div class="returning-user-name">Elena Sterijevic</div>
+                    <div class="months-badge">2 months</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; color: #a0a4b8; font-size: 14px;">
+                <strong>31% of users</strong> (5 out of 16) returned across multiple months. 
+                <strong>11 users</strong> were active for a single month only.
+            </p>
+        </div>
+
+        <!-- All Users Table -->
+        <div class="section">
+            <h2>All Users Activity Breakdown</h2>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Actions</th>
+                        <th>Months Active</th>
+                        <th>Activity Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="user-name">Martin Hartmann</div>
+                            <div class="user-role">Lead Outcome Enabling Office (OEO) — Berlin</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">413</strong></td>
+                        <td><span class="badge badge-success">4 months</span> (Jan, Mar, Apr, Jun)</td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 100%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Christine Penullar</div>
+                            <div class="user-role">APAC FPS / Philippines</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">327</strong></td>
+                        <td><span class="badge badge-success">5 months</span> (Jan–May)</td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 79%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Gaston Biyiga Biyiga</div>
+                            <div class="user-role">OEO — London</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">32</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 8%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Alessandro Ardito</div>
+                            <div class="user-role">Global Admin</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">21</strong></td>
+                        <td><span class="badge badge-success">3 months</span> (Feb, Apr, Jul)</td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 5%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Anh Nguyen Hoai</div>
+                            <div class="user-role">Finance Enterprise Partner — Vietnam</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">13</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 3%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Jessie Zhu</div>
+                            <div class="user-role">Hong Kong</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">13</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 3%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Tobias Auer</div>
+                            <div class="user-role">APAC — Thailand</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">12</strong></td>
+                        <td><span class="badge badge-success">2 months</span> (Apr, May)</td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 3%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Elena Sterijevic</div>
+                            <div class="user-role">CEETRIS / OEO — Paris</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">8</strong></td>
+                        <td><span class="badge badge-success">2 months</span> (Apr, May)</td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 2%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Katrin Heil</div>
+                            <div class="user-role">Korea</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">7</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 2%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Francois Furlan</div>
+                            <div class="user-role">Malaysia</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">7</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 2%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Tobias Auer</div>
+                            <div class="user-role">Thailand</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">4</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 1%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Florian Brand</div>
+                            <div class="user-role">New Zealand</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">2</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 0.5%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Bing Yeow Leo</div>
+                            <div class="user-role">Singapore</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">2</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 0.5%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Elena Astreiko</div>
+                            <div class="user-role">Denmark Finance Manager</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">2</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 0.5%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Rosa Rodriguez</div>
+                            <div class="user-role">Finance Director — Portugal</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">1</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 0.2%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-name">Basel monday.com Support</div>
+                            <div class="user-role">Support</div>
+                        </td>
+                        <td><strong style="color: #0073ea;">1</strong></td>
+                        <td><span class="badge badge-primary">1 month</span></td>
+                        <td>
+                            <div class="activity-bar-container">
+                                <div class="activity-bar" style="width: 0.2%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="section">
+            <h2>Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-text">
+                        <strong>Top 2 users</strong> (Martin Hartmann + Christine Penullar) account for 
+                        <strong style="color: #00c875;">85.8%</strong> of all human activity on the board.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-text">
+                        <strong>Peak week:</strong> April 20–26, 2026 saw <strong style="color: #00c875;">262 events</strong> 
+                        alone — likely a major planning or review cycle.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-text">
+                        <strong>31% of users</strong> returned across multiple months, showing sustained engagement 
+                        from core team members.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-text">
+                        Activity was <strong>highly concentrated</strong> in Q1 (Jan–Mar) and the April planning cycle, 
+                        with a sharp drop-off in Q2.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caveat Section -->
+        <div class="caveat-section">
+            <h3>Data Limitations</h3>
+            <div class="caveat-text">
+                <p><strong>Note:</strong> This report is based on monday.com Activity Log API data, which tracks 
+                <em>actions</em> (updates, subscriptions, view switches, etc.) but does not include:</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li><strong>Session time:</strong> How long users spent on the board</li>
+                    <li><strong>Page views:</strong> How many times users viewed the board without taking action</li>
+                    <li><strong>Read-only engagement:</strong> Users who viewed items but didn't edit or interact</li>
+                </ul>
+                <p style="margin-top: 12px;">
+                    As a result, this report reflects <strong>active engagement</strong> (users who made changes) 
+                    rather than total board visibility or passive consumption.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            Generated from monday.com Activity Logs API · PI_Finance Work Package Overview Board<br>
+            Report Period: January 1 – July 29, 2026 · 1,000 events analyzed
+        </footer>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#a0a4b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.font.family = "'Figtree', 'Roboto', sans-serif";
+
+        const colors = [
+            '#0073ea', '#00c875', '#fdab3d', '#df2f4a', '#9d50dd', 
+            '#579bfc', '#ff7575', '#cab641', '#9cd326', '#784bd1', 
+            '#66ccff', '#bb3354', '#ff5ac4', '#4eccc6', '#7f5347', '#c4c4c4'
+        ];
+
+        // Monthly Activity Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'Events',
+                    data: [267, 41, 234, 314, 94, 46, 4],
+                    backgroundColor: colors[0],
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        borderColor: colors[0],
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Events: ' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#a0a4b8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#a0a4b8' }
+                    }
+                }
+            }
+        });
+
+        // Top Users Chart (Horizontal Bar)
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        new Chart(usersCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Martin Hartmann', 'Christine Penullar', 'Gaston Biyiga Biyiga',
+                    'Alessandro Ardito', 'Anh Nguyen Hoai', 'Jessie Zhu',
+                    'Tobias Auer', 'Elena Sterijevic'
+                ],
+                datasets: [{
+                    label: 'Actions',
+                    data: [413, 327, 32, 21, 13, 13, 12, 8],
+                    backgroundColor: [colors[0], colors[1], colors[2], colors[3], colors[4], colors[5], colors[6], colors[7]],
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        borderColor: colors[0],
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Actions: ' + context.parsed.x.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#a0a4b8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#a0a4b8', font: { size: 12 } }
+                    }
+                }
+            }
+        });
+
+        // Feature Usage Chart (Donut)
+        const featureCtx = document.getElementById('featureChart').getContext('2d');
+        new Chart(featureCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'Updating field values', 'Subscribing to items', 'Unsubscribing from items',
+                    'Switching board views', 'Moving items between groups', 'Creating new WPs',
+                    'Changing column settings', 'Renaming items'
+                ],
+                datasets: [{
+                    data: [544, 154, 74, 52, 37, 36, 25, 16],
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#1a1d29',
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#a0a4b8',
+                            padding: 12,
+                            font: { size: 12 },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        borderColor: colors[0],
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return context.label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const bars = document.querySelectorAll('.activity-bar');
+            bars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease';
+                }, index * 50);
+            });
+        });
+    </script>
+</body>
+</html>
