@@ -1,958 +1,651 @@
-Here's the complete HTML code:
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PI Finance · Board Engagement Report</title>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Figtree', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #1a1d29 0%, #2d3142 100%);
-            color: #e8eaf0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            font-family: 'Poppins', 'Roboto', sans-serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 115, 234, 0.3);
-        }
-
-        h1 .board-name {
-            color: #0073ea;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #a0a4b8;
-            font-weight: 400;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .kpi-card {
-            background: linear-gradient(135deg, rgba(0, 115, 234, 0.1) 0%, rgba(0, 115, 234, 0.05) 100%);
-            border: 1px solid rgba(0, 115, 234, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 115, 234, 0.2);
-            border-color: rgba(0, 115, 234, 0.5);
-        }
-
-        .kpi-value {
-            font-size: 48px;
-            font-weight: 700;
-            color: #0073ea;
-            font-family: 'Poppins', sans-serif;
-            margin-bottom: 8px;
-        }
-
-        .kpi-label {
-            font-size: 14px;
-            color: #a0a4b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .kpi-sublabel {
-            font-size: 12px;
-            color: #676879;
-            margin-top: 4px;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        h2::before {
-            content: '';
-            width: 4px;
-            height: 24px;
-            background: linear-gradient(180deg, #0073ea 0%, #00c875 100%);
-            border-radius: 2px;
-        }
-
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .chart-container {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 24px;
-            min-height: 350px;
-        }
-
-        .chart-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .users-table thead {
-            background: rgba(0, 115, 234, 0.1);
-        }
-
-        .users-table th {
-            padding: 14px;
-            text-align: left;
-            font-weight: 600;
-            color: #0073ea;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid rgba(0, 115, 234, 0.3);
-        }
-
-        .users-table td {
-            padding: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 14px;
-        }
-
-        .users-table tr {
-            transition: background 0.2s ease;
-        }
-
-        .users-table tbody tr:hover {
-            background: rgba(0, 115, 234, 0.05);
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        .user-role {
-            color: #a0a4b8;
-            font-size: 13px;
-        }
-
-        .activity-bar-container {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .activity-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #0073ea 0%, #00c875 100%);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin: 4px;
-        }
-
-        .badge-primary {
-            background: rgba(0, 115, 234, 0.2);
-            color: #579bfc;
-            border: 1px solid rgba(0, 115, 234, 0.3);
-        }
-
-        .badge-success {
-            background: rgba(0, 200, 117, 0.2);
-            color: #00c875;
-            border: 1px solid rgba(0, 200, 117, 0.3);
-        }
-
-        .badge-warning {
-            background: rgba(255, 203, 0, 0.2);
-            color: #ffcb00;
-            border: 1px solid rgba(255, 203, 0, 0.3);
-        }
-
-        .returning-users-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .returning-user-card {
-            background: rgba(0, 115, 234, 0.05);
-            border: 1px solid rgba(0, 115, 234, 0.2);
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .returning-user-card:hover {
-            background: rgba(0, 115, 234, 0.1);
-            border-color: rgba(0, 115, 234, 0.4);
-            transform: translateX(4px);
-        }
-
-        .returning-user-name {
-            font-weight: 600;
-            color: #ffffff;
-            font-size: 15px;
-        }
-
-        .months-badge {
-            background: linear-gradient(135deg, #0073ea 0%, #00c875 100%);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .insight-card {
-            background: linear-gradient(135deg, rgba(0, 200, 117, 0.1) 0%, rgba(0, 200, 117, 0.05) 100%);
-            border: 1px solid rgba(0, 200, 117, 0.3);
-            border-radius: 8px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .insight-card::before {
-            content: '💡';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 32px;
-            opacity: 0.3;
-        }
-
-        .insight-text {
-            font-size: 15px;
-            color: #e8eaf0;
-            line-height: 1.6;
-        }
-
-        .caveat-section {
-            background: linear-gradient(135deg, rgba(255, 203, 0, 0.1) 0%, rgba(255, 203, 0, 0.05) 100%);
-            border: 1px solid rgba(255, 203, 0, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 30px;
-        }
-
-        .caveat-section h3 {
-            color: #ffcb00;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .caveat-section h3::before {
-            content: '⚠️';
-            font-size: 20px;
-        }
-
-        .caveat-text {
-            color: #d0d4e4;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .event-split {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .event-split-card {
-            flex: 1;
-            min-width: 200px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .event-split-value {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .event-split-value.human {
-            color: #00c875;
-        }
-
-        .event-split-value.automated {
-            color: #9d50dd;
-        }
-
-        .event-split-label {
-            font-size: 14px;
-            color: #a0a4b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .event-split-percent {
-            font-size: 12px;
-            color: #676879;
-            margin-top: 4px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #676879;
-            font-size: 13px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 28px;
-            }
-
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .kpi-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roche Workspace Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface2: #f8f9fb;
+    --border: #e5e8ef;
+    --text: #1f2d3d;
+    --text2: #6b7a94;
+    --accent: #0073ea;
+    --accent2: #00c875;
+    --accent3: #e2445c;
+    --accent4: #fdab3d;
+    --accent5: #a25ddc;
+    --radius: 12px;
+    --shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 16px; }
+  .header-title { font-size: 18px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .header-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--text2); }
+  .badge span { color: var(--text); font-weight: 600; }
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; gap: 4px; overflow-x: auto; }
+  .nav-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+  .page { display: none; padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+  .page.active { display: block; }
+  .sec-title { font-size: 15px; font-weight: 700; margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+  .sec-note { font-size: 11px; font-weight: 400; color: var(--text2); background: var(--bg); padding: 2px 8px; border-radius: 4px; }
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 14px; margin-bottom: 24px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+  .kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text2); margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: 800; line-height: 1; }
+  .kpi-sub { font-size: 11px; color: var(--text2); margin-top: 5px; }
+  .kpi-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 5px; }
+  .pill-g { background: #dcf5e7; color: #037f4c; }
+  .pill-o { background: #fff4e0; color: #c47800; }
+  .pill-gr { background: #f0f1f3; color: #6b7a94; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;}}
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom:0; }
+  .card-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .card-title small { font-size: 11px; font-weight: 400; color: var(--text2); }
+  .cw-sm { position:relative; height: 220px; }
+  .cw-md { position:relative; height: 270px; }
+  .cw-lg { position:relative; height: 330px; }
+  .mb24 { margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--text2); padding: 8px 10px; border-bottom: 2px solid var(--border); background: var(--surface2); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .rank { font-weight: 700; color: var(--accent); }
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .t-doc { background: #e0f0ff; color: #0052cc; }
+  .t-brd { background: #e8f5e9; color: #2e7d32; }
+  .t-wf  { background: #fff3e0; color: #e65100; }
+  .t-del { background: #fce4ec; color: #b71c1c; }
+  .t-bot { background: #fce4ec; color: #b71c1c; }
+  .t-edt { background: #e8f5e9; color: #2e7d32; }
+  .t-vwr { background: #fff4e0; color: #c47800; }
+  .bar-i { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 50px; }
+  .bar-f { height: 100%; border-radius: 3px; }
+  .bar-n { font-weight: 600; min-width: 52px; text-align: right; font-size: 12px; }
+  .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .up { display: flex; align-items: center; gap: 8px; }
+  .un { font-weight: 500; font-size: 13px; }
+  .ue { font-size: 11px; color: var(--text2); }
+  .seg-bar { display: flex; height: 26px; border-radius: 6px; overflow: hidden; margin: 12px 0 8px; }
+  .seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+  .leg { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+  .leg-i { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .leg-d { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .info { background: #e8f4fd; border: 1px solid #b3d9f7; border-radius: 8px; padding: 11px 14px; font-size: 12px; color: #0052cc; margin-bottom: 18px; display: flex; gap: 8px; }
+  .hint { font-size: 11px; color: var(--text2); margin-top: 8px; font-style: italic; }
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  code { background: var(--bg); padding: 2px 5px; border-radius: 4px; font-size: 12px; }
+  .tw { overflow-x: auto; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><span class="board-name">PI Finance</span> · Board Engagement Report</h1>
-            <p class="subtitle">Jan – Jul 2026 | Powered by monday.com Activity Logs</p>
-            <p class="subtitle" style="margin-top: 8px; font-weight: 600; color: #0073ea;">PI_Finance Work Package Overview</p>
-        </header>
 
-        <!-- KPI Cards -->
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-value">1,000</div>
-                <div class="kpi-label">Total Events</div>
-                <div class="kpi-sublabel">Jan – Jul 29, 2026</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">16</div>
-                <div class="kpi-label">Active Users</div>
-                <div class="kpi-sublabel">Across 7 months</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">5</div>
-                <div class="kpi-label">Returning Users</div>
-                <div class="kpi-sublabel">Active 2+ months</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">April</div>
-                <div class="kpi-label">Peak Month</div>
-                <div class="kpi-sublabel">314 events</div>
-            </div>
-        </div>
-
-        <!-- Event Split -->
-        <div class="section">
-            <h2>Event Distribution</h2>
-            <div class="event-split">
-                <div class="event-split-card">
-                    <div class="event-split-value human">865</div>
-                    <div class="event-split-label">Human Events</div>
-                    <div class="event-split-percent">86.5% of total</div>
-                </div>
-                <div class="event-split-card">
-                    <div class="event-split-value automated">135</div>
-                    <div class="event-split-label">Automated Events</div>
-                    <div class="event-split-percent">13.5% of total</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts -->
-        <div class="chart-grid">
-            <div class="chart-container">
-                <div class="chart-title">Monthly Activity Trend</div>
-                <canvas id="monthlyChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">Feature Usage Distribution</div>
-                <canvas id="featureChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-container" style="margin-bottom: 30px;">
-            <div class="chart-title">Top Users by Actions</div>
-            <canvas id="usersChart"></canvas>
-        </div>
-
-        <!-- Returning Users -->
-        <div class="section">
-            <h2>Returning Users (Active 2+ Months)</h2>
-            <div class="returning-users-grid">
-                <div class="returning-user-card">
-                    <div class="returning-user-name">Christine Penullar</div>
-                    <div class="months-badge">5 months</div>
-                </div>
-                <div class="returning-user-card">
-                    <div class="returning-user-name">Martin Hartmann</div>
-                    <div class="months-badge">4 months</div>
-                </div>
-                <div class="returning-user-card">
-                    <div class="returning-user-name">Alessandro Ardito</div>
-                    <div class="months-badge">3 months</div>
-                </div>
-                <div class="returning-user-card">
-                    <div class="returning-user-name">Tobias Auer</div>
-                    <div class="months-badge">2 months</div>
-                </div>
-                <div class="returning-user-card">
-                    <div class="returning-user-name">Elena Sterijevic</div>
-                    <div class="months-badge">2 months</div>
-                </div>
-            </div>
-            <p style="margin-top: 20px; color: #a0a4b8; font-size: 14px;">
-                <strong>31% of users</strong> (5 out of 16) returned across multiple months. 
-                <strong>11 users</strong> were active for a single month only.
-            </p>
-        </div>
-
-        <!-- All Users Table -->
-        <div class="section">
-            <h2>All Users Activity Breakdown</h2>
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Actions</th>
-                        <th>Months Active</th>
-                        <th>Activity Level</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="user-name">Martin Hartmann</div>
-                            <div class="user-role">Lead Outcome Enabling Office (OEO) — Berlin</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">413</strong></td>
-                        <td><span class="badge badge-success">4 months</span> (Jan, Mar, Apr, Jun)</td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 100%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Christine Penullar</div>
-                            <div class="user-role">APAC FPS / Philippines</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">327</strong></td>
-                        <td><span class="badge badge-success">5 months</span> (Jan–May)</td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 79%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Gaston Biyiga Biyiga</div>
-                            <div class="user-role">OEO — London</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">32</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 8%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Alessandro Ardito</div>
-                            <div class="user-role">Global Admin</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">21</strong></td>
-                        <td><span class="badge badge-success">3 months</span> (Feb, Apr, Jul)</td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 5%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Anh Nguyen Hoai</div>
-                            <div class="user-role">Finance Enterprise Partner — Vietnam</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">13</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 3%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Jessie Zhu</div>
-                            <div class="user-role">Hong Kong</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">13</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 3%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Tobias Auer</div>
-                            <div class="user-role">APAC — Thailand</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">12</strong></td>
-                        <td><span class="badge badge-success">2 months</span> (Apr, May)</td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 3%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Elena Sterijevic</div>
-                            <div class="user-role">CEETRIS / OEO — Paris</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">8</strong></td>
-                        <td><span class="badge badge-success">2 months</span> (Apr, May)</td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 2%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Katrin Heil</div>
-                            <div class="user-role">Korea</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">7</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 2%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Francois Furlan</div>
-                            <div class="user-role">Malaysia</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">7</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 2%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Tobias Auer</div>
-                            <div class="user-role">Thailand</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">4</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 1%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Florian Brand</div>
-                            <div class="user-role">New Zealand</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">2</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 0.5%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Bing Yeow Leo</div>
-                            <div class="user-role">Singapore</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">2</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 0.5%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Elena Astreiko</div>
-                            <div class="user-role">Denmark Finance Manager</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">2</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 0.5%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Rosa Rodriguez</div>
-                            <div class="user-role">Finance Director — Portugal</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">1</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 0.2%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-name">Basel monday.com Support</div>
-                            <div class="user-role">Support</div>
-                        </td>
-                        <td><strong style="color: #0073ea;">1</strong></td>
-                        <td><span class="badge badge-primary">1 month</span></td>
-                        <td>
-                            <div class="activity-bar-container">
-                                <div class="activity-bar" style="width: 0.2%;"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Key Insights -->
-        <div class="section">
-            <h2>Key Insights</h2>
-            <div class="insights-grid">
-                <div class="insight-card">
-                    <div class="insight-text">
-                        <strong>Top 2 users</strong> (Martin Hartmann + Christine Penullar) account for 
-                        <strong style="color: #00c875;">85.8%</strong> of all human activity on the board.
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <div class="insight-text">
-                        <strong>Peak week:</strong> April 20–26, 2026 saw <strong style="color: #00c875;">262 events</strong> 
-                        alone — likely a major planning or review cycle.
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <div class="insight-text">
-                        <strong>31% of users</strong> returned across multiple months, showing sustained engagement 
-                        from core team members.
-                    </div>
-                </div>
-                <div class="insight-card">
-                    <div class="insight-text">
-                        Activity was <strong>highly concentrated</strong> in Q1 (Jan–Mar) and the April planning cycle, 
-                        with a sharp drop-off in Q2.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Caveat Section -->
-        <div class="caveat-section">
-            <h3>Data Limitations</h3>
-            <div class="caveat-text">
-                <p><strong>Note:</strong> This report is based on monday.com Activity Log API data, which tracks 
-                <em>actions</em> (updates, subscriptions, view switches, etc.) but does not include:</p>
-                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
-                    <li><strong>Session time:</strong> How long users spent on the board</li>
-                    <li><strong>Page views:</strong> How many times users viewed the board without taking action</li>
-                    <li><strong>Read-only engagement:</strong> Users who viewed items but didn't edit or interact</li>
-                </ul>
-                <p style="margin-top: 12px;">
-                    As a result, this report reflects <strong>active engagement</strong> (users who made changes) 
-                    rather than total board visibility or passive consumption.
-                </p>
-            </div>
-        </div>
-
-        <footer>
-            Generated from monday.com Activity Logs API · PI_Finance Work Package Overview Board<br>
-            Report Period: January 1 – July 29, 2026 · 1,000 events analyzed
-        </footer>
+<div class="header">
+  <div class="header-left">
+    <div class="logo">m</div>
+    <div>
+      <div class="header-title">Workspace Analytics — Roche</div>
+      <div class="header-sub">Account 9743496 · Workspace 2266387 · Generated September 2026</div>
     </div>
+  </div>
+  <div class="header-meta">
+    <div class="badge">Data through <span>Sep 21, 2026</span></div>
+    <div class="badge">Source <span>monday.com Snowflake</span></div>
+    <div class="badge">Refresh <span>Monthly</span></div>
+  </div>
+</div>
 
-    <script>
-        Chart.defaults.color = '#a0a4b8';
-        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-        Chart.defaults.font.family = "'Figtree', 'Roboto', sans-serif";
+<div class="nav">
+  <div class="nav-tab active" onclick="show('overview',this)">📊 Overview</div>
+  <div class="nav-tab" onclick="show('boards',this)">📋 Boards</div>
+  <div class="nav-tab" onclick="show('trends',this)">📈 Trends</div>
+  <div class="nav-tab" onclick="show('viewers',this)">👁 Viewers</div>
+  <div class="nav-tab" onclick="show('geography',this)">🌍 Geography</div>
+  <div class="nav-tab" onclick="show('usage',this)">⚙ Usage Patterns</div>
+</div>
 
-        const colors = [
-            '#0073ea', '#00c875', '#fdab3d', '#df2f4a', '#9d50dd', 
-            '#579bfc', '#ff7575', '#cab641', '#9cd326', '#784bd1', 
-            '#66ccff', '#bb3354', '#ff5ac4', '#4eccc6', '#7f5347', '#c4c4c4'
-        ];
+<!-- ════════════════════ OVERVIEW ════════════════════ -->
+<div class="page active" id="page-overview">
+  <div class="info">
+    <span>ℹ️</span>
+    <span>Board names are not stored in the data warehouse (governance policy) — boards identified by ID. Sep 2026 figures are partial (through Sep 21). "Account-level" metrics cover all workspaces in account 9743496.</span>
+  </div>
 
-        // Monthly Activity Chart
-        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-        new Chart(monthlyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [{
-                    label: 'Events',
-                    data: [267, 41, 234, 314, 94, 46, 4],
-                    backgroundColor: colors[0],
-                    borderRadius: 6,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 },
-                        borderColor: colors[0],
-                        borderWidth: 1,
-                        callbacks: {
-                            label: function(context) {
-                                return 'Events: ' + context.parsed.y.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#a0a4b8' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#a0a4b8' }
-                    }
-                }
-            }
-        });
+  <div class="sec-title">📊 Workspace Snapshot <span class="sec-note">Workspace 2266387 · Last 28 days</span></div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total Members</div><div class="kpi-value">7,173</div><div class="kpi-sub">Workspace 2266387</div></div>
+    <div class="kpi"><div class="kpi-label">Active Any L28D</div><div class="kpi-value">1,510</div><div class="kpi-sub">21.1% of members</div><div class="kpi-pill pill-g">Active</div></div>
+    <div class="kpi"><div class="kpi-label">Editors / Contributors</div><div class="kpi-value">714</div><div class="kpi-sub">Made edits or comments</div><div class="kpi-pill pill-g">9.9%</div></div>
+    <div class="kpi"><div class="kpi-label">Passive Viewers</div><div class="kpi-value">801</div><div class="kpi-sub">Views only, no edits</div><div class="kpi-pill pill-o">11.2%</div></div>
+    <div class="kpi"><div class="kpi-label">Inactive L28D</div><div class="kpi-value">5,658</div><div class="kpi-sub">No board activity</div><div class="kpi-pill pill-gr">78.9%</div></div>
+    <div class="kpi"><div class="kpi-label">Active / Passive Ratio</div><div class="kpi-value">0.89×</div><div class="kpi-sub">714 editors : 801 viewers</div></div>
+    <div class="kpi"><div class="kpi-label">Max Active Days</div><div class="kpi-value">28</div><div class="kpi-sub">Full month — top user</div><div class="kpi-pill pill-g">Power user</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Active Days</div><div class="kpi-value">0.95</div><div class="kpi-sub">Across all 7,173 members</div></div>
+  </div>
 
-        // Top Users Chart (Horizontal Bar)
-        const usersCtx = document.getElementById('usersChart').getContext('2d');
-        new Chart(usersCtx, {
-            type: 'bar',
-            data: {
-                labels: [
-                    'Martin Hartmann', 'Christine Penullar', 'Gaston Biyiga Biyiga',
-                    'Alessandro Ardito', 'Anh Nguyen Hoai', 'Jessie Zhu',
-                    'Tobias Auer', 'Elena Sterijevic'
-                ],
-                datasets: [{
-                    label: 'Actions',
-                    data: [413, 327, 32, 21, 13, 13, 12, 8],
-                    backgroundColor: [colors[0], colors[1], colors[2], colors[3], colors[4], colors[5], colors[6], colors[7]],
-                    borderRadius: 6,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 },
-                        borderColor: colors[0],
-                        borderWidth: 1,
-                        callbacks: {
-                            label: function(context) {
-                                return 'Actions: ' + context.parsed.x.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#a0a4b8' }
-                    },
-                    y: {
-                        grid: { display: false },
-                        ticks: { color: '#a0a4b8', font: { size: 12 } }
-                    }
-                }
-            }
-        });
+  <div class="sec-title">👥 Active vs. Passive Users <span class="sec-note">Last 30 days · Board activity</span></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">User Type Breakdown</div>
+      <div class="seg-bar">
+        <div class="seg" style="width:9.9%;background:#00c875" title="Editors: 714">10%</div>
+        <div class="seg" style="width:11.2%;background:#fdab3d" title="Viewers: 801">11%</div>
+        <div class="seg" style="width:78.9%;background:#e5e8ef;color:#6b7a94" title="Inactive: 5,658">79%</div>
+      </div>
+      <div class="leg">
+        <div class="leg-i"><div class="leg-d" style="background:#00c875"></div><strong>Editors</strong> — 714 (9.9%) — made edits/comments</div>
+        <div class="leg-i"><div class="leg-d" style="background:#fdab3d"></div><strong>Passive Viewers</strong> — 801 (11.2%) — viewed only</div>
+        <div class="leg-i"><div class="leg-d" style="background:#e5e8ef"></div><strong>Inactive</strong> — 5,658 (78.9%) — no board activity</div>
+      </div>
+      <div class="hint">Editors: ≥1 item creation, edit, comment, update, or status change. Viewers: ≥1 board load, no content changes.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribution</div>
+      <div class="cw-md"><canvas id="cPersona"></canvas></div>
+    </div>
+  </div>
 
-        // Feature Usage Chart (Donut)
-        const featureCtx = document.getElementById('featureChart').getContext('2d');
-        new Chart(featureCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [
-                    'Updating field values', 'Subscribing to items', 'Unsubscribing from items',
-                    'Switching board views', 'Moving items between groups', 'Creating new WPs',
-                    'Changing column settings', 'Renaming items'
-                ],
-                datasets: [{
-                    data: [544, 154, 74, 52, 37, 36, 25, 16],
-                    backgroundColor: colors,
-                    borderWidth: 2,
-                    borderColor: '#1a1d29',
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            color: '#a0a4b8',
-                            padding: 12,
-                            font: { size: 12 },
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
-                        borderColor: colors[0],
-                        borderWidth: 1,
-                        callbacks: {
-                            label: function(context) {
-                                const value = context.parsed || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return context.label + ': ' + value + ' (' + percentage + '%)';
-                            }
-                        }
-                    }
-                }
-            }
-        });
+  <div class="sec-title">🏆 Top 20 Most Active Users <span class="sec-note">Last 28 days</span></div>
+  <div class="card mb24">
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Name</th><th>Country</th><th>Days Active L28</th><th>Content Days</th><th>Comms Days</th></tr></thead>
+      <tbody id="tTopUsers"></tbody>
+    </table></div>
+  </div>
+</div>
 
-        window.addEventListener('load', function() {
-            const bars = document.querySelectorAll('.activity-bar');
-            bars.forEach((bar, index) => {
-                setTimeout(() => {
-                    bar.style.transition = 'width 1s ease';
-                }, index * 50);
-            });
-        });
-    </script>
+<!-- ════════════════════ BOARDS ════════════════════ -->
+<div class="page" id="page-boards">
+  <div class="info"><span>💡</span><span><strong>Activity counts:</strong> Views = board load events (page opens). Contributor events = item creates + edits + comments + updates + status changes combined. Unique users = distinct people who loaded the board in 30 days.</span></div>
+
+  <div class="sec-title">🏅 Top Boards by Views &amp; Contributions <span class="sec-note">Last 28 days · Workspace 2266387</span></div>
+  <div class="grid2 mb24">
+    <div class="card"><div class="card-title">By Views (Board Loads)</div><div class="cw-lg"><canvas id="cBoardViews"></canvas></div></div>
+    <div class="card"><div class="card-title">By Contributor Events <small>Edits + Comments + Updates</small></div><div class="cw-lg"><canvas id="cBoardContrib"></canvas></div></div>
+  </div>
+
+  <div class="card mb24">
+    <div class="card-title">Full Board Breakdown <small>Top 15 by views · Last 28 days</small></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Board ID</th><th>Type</th><th>Status</th><th>Items</th><th>Views L28D</th><th>Unique Users L30D</th><th>Contributors L28D</th><th>Contributor Events</th></tr></thead>
+      <tbody id="tBoards"></tbody>
+    </table></div>
+    <div class="hint">⚠ <strong>WBO Welcome</strong>, <strong>[Poland] Tutorials</strong>, <strong>[Chile] Tips & Tricks</strong>, <strong>Ticket's type</strong>, <strong>Country Code Match</strong> show high views from ≤2 users — likely automated monitoring. <strong>Short Term Outcomes</strong> has the most unique human viewers (276).</div>
+  </div>
+</div>
+
+<!-- ════════════════════ TRENDS ════════════════════ -->
+<div class="page" id="page-trends">
+  <div class="sec-title">📈 Monthly View Trends <span class="sec-note">Mar–Sep 2026 · Top boards</span></div>
+  <div class="card mb24">
+    <div class="card-title">Total Views Per Board Per Month <small>Human-traffic boards (automated outliers excluded from chart)</small></div>
+    <div class="cw-lg"><canvas id="cMonthViews"></canvas></div>
+    <div class="hint">Sep 2026 partial (through Sep 21). <strong>🌍 WBO — Welcome & Getting Started</strong> excluded from this chart (9k+ views/month, 1–2 users, automated).</div>
+  </div>
+
+  <div class="grid2 mb24">
+    <div class="card"><div class="card-title">Unique Viewers Per Month</div><div class="cw-md"><canvas id="cMonthUniq"></canvas></div></div>
+    <div class="card"><div class="card-title">Portfolio Views Over Time <small>Account-level · All active portfolios</small></div><div class="cw-md"><canvas id="cPortfolio"></canvas></div></div>
+  </div>
+
+  <div class="grid2 mb24">
+    <div class="card">
+      <div class="card-title">Project Board Views Over Time <small>Account-level</small></div>
+      <div class="cw-md"><canvas id="cProjects"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Portfolio vs. Project Load Events <small>Account-level monthly comparison</small></div>
+      <div class="cw-md"><canvas id="cPvP"></canvas></div>
+      <div class="hint">⚠ Time-on-board is not a pre-built warehouse metric. Load events are the best available proxy. Session durations require raw event processing from bigbrain.l2.raw_boards_core_events.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ VIEWERS ════════════════════ -->
+<div class="page" id="page-viewers">
+  <div class="sec-title">👁 Viewers Dashboard <span class="sec-note">Board-level view metrics · Sep 2026 (partial)</span></div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total Views This Month</div><div class="kpi-value">17,009</div><div class="kpi-sub">All boards · Sep 1–21</div></div>
+    <div class="kpi"><div class="kpi-label">Unique Viewers This Month</div><div class="kpi-value">252</div><div class="kpi-sub">Distinct users across boards</div></div>
+    <div class="kpi"><div class="kpi-label">Most Viewed Board</div><div class="kpi-value">9,132</div><div class="kpi-sub">🌍 WBO Welcome · 1 viewer (automated)</div></div>
+    <div class="kpi"><div class="kpi-label">Broadest Reach</div><div class="kpi-value">137</div><div class="kpi-sub">Short Term Outcomes unique viewers</div></div>
+    <div class="kpi"><div class="kpi-label">Highest Avg/Viewer</div><div class="kpi-value">9,132×</div><div class="kpi-sub">🌍 WBO Welcome (automated)</div></div>
+    <div class="kpi"><div class="kpi-label">Highest Human Avg/Viewer</div><div class="kpi-value">~5.5×</div><div class="kpi-sub">[Türkiye] WP Overview (human traffic)</div></div>
+  </div>
+
+  <div class="card mb24">
+    <div class="card-title">Board View Metrics by Month <small>Unique viewers + total views</small></div>
+    <div class="tw"><table>
+      <thead><tr><th>Board</th><th>Type</th><th>Sep Views</th><th>Sep Unique</th><th>Aug Views</th><th>Aug Unique</th><th>Jul Views</th><th>Jul Unique</th><th>Avg/Viewer Sep</th></tr></thead>
+      <tbody id="tViewers"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card mb24">
+    <div class="card-title">Top Individual User–Board Sessions <small>Last 30 days · Sorted by total sessions</small></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>User</th><th>Board</th><th>Days Viewed</th><th>Total Sessions</th><th>Avg/Day</th><th>Contribution Events</th><th>Type</th></tr></thead>
+      <tbody id="tSessions"></tbody>
+    </table></div>
+    <div class="hint">Anastasia Monroy (User 95694642) — 9,133 sessions, 6 days, 0 contributions on <strong>🌍 WBO — Welcome & Getting Started</strong> = almost certainly automated. Exclude from human engagement metrics.</div>
+  </div>
+
+  <div class="grid2 mb24">
+    <div class="card"><div class="card-title">Monthly Views Trend <small>Human-traffic boards</small></div><div class="cw-md"><canvas id="cVwTrend"></canvas></div></div>
+    <div class="card"><div class="card-title">Unique Viewers per Board <small>Sep 2026</small></div><div class="cw-md"><canvas id="cVwUniq"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════ GEOGRAPHY ════════════════════ -->
+<div class="page" id="page-geography">
+  <div class="sec-title">🌍 Users by Geography <span class="sec-note">7,173 members · 30+ countries</span></div>
+  <div class="grid2 mb24">
+    <div class="card"><div class="card-title">Total Members by Country <small>Top 10</small></div><div class="cw-lg"><canvas id="cGeoTotal"></canvas></div></div>
+    <div class="card"><div class="card-title">Active Users by Country <small>Active L28D · Top 10</small></div><div class="cw-lg"><canvas id="cGeoActive"></canvas></div></div>
+  </div>
+
+  <div class="card mb24">
+    <div class="card-title">Full Country Breakdown <small>30 countries · Sorted by total members</small></div>
+    <div class="tw"><table>
+      <thead><tr><th>Country</th><th>Code</th><th>Total Members</th><th>Active L28D</th><th>Content Active L28D</th><th>Activity Rate</th><th>Content Rate</th></tr></thead>
+      <tbody id="tGeo"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ════════════════════ USAGE PATTERNS ════════════════════ -->
+<div class="page" id="page-usage">
+  <div class="sec-title">⚙ Usage Patterns <span class="sec-note">Account-level · Last 30 days</span></div>
+  <div class="info"><span>ℹ️</span><span>Main Table vs Custom View and Copy/Duplicate metrics are <strong>account-level</strong> (all workspaces in account 9743496). Workspace-level breakdowns for these event types are not available in pre-built aggregations.</span></div>
+
+  <div class="grid2 mb24">
+    <div class="card">
+      <div class="card-title">Main Table vs. Custom Views <small>Account-level · Last 30 days</small></div>
+      <div class="cw-md"><canvas id="cViewType"></canvas></div>
+      <div class="leg" style="margin-top:12px">
+        <div class="leg-i"><div class="leg-d" style="background:#0073ea"></div>Custom views (open_board_subset) — 450,119 events</div>
+        <div class="leg-i"><div class="leg-d" style="background:#5c9bd6"></div>Custom views (open_board_view_ui) — 350,315 events</div>
+        <div class="leg-i"><div class="leg-d" style="background:#00c875"></div>Main Table returns (clear_board_subset) — 77,405 events</div>
+      </div>
+      <div class="hint">~91% of view navigation events are Custom Views vs ~9% Main Table returns. 23,257 unique users opened custom views; 10,045 returned to Main Table.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Copy / Duplicate Feature <small>Unique users per action type · Last 30 days</small></div>
+      <div class="cw-md"><canvas id="cCopy"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card mb24">
+    <div class="card-title">Copy &amp; Duplicate — Full Breakdown <small>Account-level · Last 30 days</small></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Action</th><th>Unique Users</th><th>Total Events</th><th>Events/User</th><th>User Reach</th></tr></thead>
+      <tbody id="tCopy"></tbody>
+    </table></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-title">📋 Core Column Coverage</div>
+  <div class="card mb24">
+    <div class="card-title">Core Components — Data Completeness</div>
+    <p style="color:var(--text2);line-height:1.7">The "percentage of active boards missing data in core columns" metric requires board-level item data (column fill rates) which is <strong>not available in standard warehouse aggregations</strong>. This needs a custom query against the raw items schema — likely <code>bigbrain.l2.raw_items</code> or equivalent, joined to each board's column definitions — scoped to active boards in workspace 2266387.<br><br>
+    Recommended next step: run a targeted query to check fill rates of key column types (Status, Date, Person, Text) per active board, then compute the % of boards with ≥X% missing data in each column.</p>
+  </div>
+</div>
+
+<script>
+const COLORS = ['#0073ea','#00c875','#fdab3d','#e2445c','#a25ddc','#037f4c','#ff642e','#00d0f5','#5c5c5c','#f65f7c','#68a1bd','#7e3af2'];
+// User name lookup
+const UN = {
+  61193431:'Goktug Akan',         61193433:'Justyna Ochal',
+  61193438:'Dimitris Papanikolopoulos', 63599288:'Guillermo Parra Ramirez',
+  63677759:'Anh Nguyen Hoai',     63851474:'Khiem Huynh Thien',
+  63903240:'Nesligul Bulbul',     64383302:'Olivier Thomet',
+  65420302:'Lorena Bustos',       65625679:'Pavel Pospisil',
+  66898971:'Huyen Duong Thanh',   68213912:'Emre Aydin',
+  68223050:'Christoph Gfeller',   68577089:'Ewa Patrzykat',
+  68935562:'Anne Kolbye',         69101689:'Can Ngo Van',
+  71729123:'Daniel Bretschneider',72346295:'Buket Ozkucuk Acaroglu',
+  73708909:'Karina Sewastianowicz',74106764:'Junghyun Lee',
+  74776729:'Katarzyna Sokolowska',76774764:'Anette Forsstrom',
+  77688149:'Reto Schlegel',       78936325:'Una Gemovic',
+  79226279:'Beng Sian Ooi',       90357032:'Muhammad Jawad',
+  90468486:'Andjela Sika',        95601293:'Alfred Simroth',
+  95694642:'Anastasia Monroy',    96168624:'Tatana Velgosova',
+  98340126:'Preeti Dheda',        98658430:'Miona Jovanovic',
+  100183540:'Ghulam Anbia Madni', 100957254:'Thoni Chandra',
+  102186331:'Zulal Paltaoglu',    102635841:'Muhammad Nabeed Tahir',
+  105944965:'Mithat Selvi'
+};
+function uname(id){return UN[id]||'User '+id;}
+const MONTHS7 = ['2026-03-01','2026-04-01','2026-05-01','2026-06-01','2026-07-01','2026-08-01','2026-09-01'];
+const MLABELS = ['Mar','Apr','May','Jun','Jul','Aug','Sep*'];
+
+const BN = {
+  1630051914:'Short Term Outcomes',
+  1667970515:'[Poland] WP Overview',
+  1773051053:'[Türkiye] WP Overview',
+  1798375731:'Country Code Match',
+  1843040726:'[Germany] WP Overview',
+  2034386119:'[Thailand] WP Overview',
+  2034435738:'[Vietnam] WP Overview',
+  5043241195:'[Serbia & Montenegro] WP Overview',
+  5057676945:'[Austria] WP Overview',
+  5093125911:"Ticket's type",
+  5094925195:'[Poland] Tutorials, tips & tricks 🚀',
+  5098649923:'🌍 WBO — Welcome & Getting Started',
+  5098962901:'Reuse CLT',
+  5100249271:'🚀 Tips & Tricks — Bienvenid@s! 🇨🇱',
+  5101585637:'[FP Squad] - Auto Archive'
+};
+// Board type lookup (accurate, not derived from ID magnitude)
+const BT = {
+  1630051914:'Board',  1667970515:'Board',  1773051053:'Board',
+  1798375731:'Board',  1843040726:'Board',  2034386119:'Board',
+  2034435738:'Board',  5043241195:'Board',  5057676945:'Board',
+  5093125911:'Board',  5094925195:'Documents',
+  5098649923:'Documents', 5098962901:'Board',
+  5100249271:'Documents', 5101585637:'Board'
+};
+function lbl(id){return BN[id]||'Board '+id;}
+function btype(id){return BT[id]||'Board';}
+function fmt(n){return n==null?'—':Number(n).toLocaleString();}
+function pct(a,b){return b?Math.round(a/b*100)+'%':'—';}
+function ini(name){return name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+
+const TOP15 = [
+  {id:5098649923,state:'active',type:'Documents',items:2,   loads:12763,uu:2,  contrib:0, ce:0},
+  {id:5094925195,state:'active',type:'Documents',items:1,   loads:8636, uu:11, contrib:0, ce:0},
+  {id:5100249271,state:'active',type:'Documents',items:1,   loads:8199, uu:5,  contrib:0, ce:0},
+  {id:5093125911,state:'active',type:'Workflows', items:5,  loads:5354, uu:2,  contrib:0, ce:0},
+  {id:1798375731,state:'active',type:'Workflows', items:5,  loads:3325, uu:2,  contrib:0, ce:0},
+  {id:2034435738,state:'active',type:'Board',     items:124,loads:1401, uu:67, contrib:48,ce:960},
+  {id:1843040726,state:'active',type:'Board',     items:319,loads:1181, uu:179,contrib:46,ce:1043},
+  {id:1773051053,state:'active',type:'Board',     items:675,loads:1143, uu:85, contrib:41,ce:3396},
+  {id:1630051914,state:'active',type:'Board',     items:3472,loads:1093,uu:276,contrib:97,ce:857},
+  {id:5043241195,state:'active',type:'Board',     items:127,loads:932,  uu:61, contrib:34,ce:2125},
+  {id:2034386119,state:'active',type:'Board',     items:195,loads:856,  uu:66, contrib:39,ce:1381},
+  {id:5098962901,state:'active',type:'Workflows', items:null,loads:790, uu:2,  contrib:0, ce:0},
+  {id:5057676945,state:'active',type:'Board',     items:204,loads:622,  uu:65, contrib:24,ce:571},
+  {id:1667970515,state:'active',type:'Board',     items:227,loads:530,  uu:80, contrib:19,ce:462},
+  {id:5101585637,state:'active',type:'Workflows', items:null,loads:508, uu:1,  contrib:0, ce:0},
+];
+
+const MONTHLY = [
+  {m:'2026-03-01',b:1843040726,v:589,u:111},{m:'2026-03-01',b:2034435738,v:417,u:52},{m:'2026-03-01',b:5043241195,v:389,u:51},{m:'2026-03-01',b:1630051914,v:281,u:133},{m:'2026-03-01',b:2034386119,v:185,u:40},{m:'2026-03-01',b:1773051053,v:170,u:37},{m:'2026-03-01',b:5057676945,v:159,u:33},
+  {m:'2026-04-01',b:1843040726,v:2302,u:159},{m:'2026-04-01',b:5094925195,v:2208,u:12},{m:'2026-04-01',b:2034435738,v:1569,u:69},{m:'2026-04-01',b:5043241195,v:1465,u:66},{m:'2026-04-01',b:1630051914,v:1081,u:288},{m:'2026-04-01',b:1773051053,v:984,u:74},{m:'2026-04-01',b:2034386119,v:844,u:54},{m:'2026-04-01',b:5057676945,v:779,u:61},
+  {m:'2026-05-01',b:2034435738,v:1569,u:64},{m:'2026-05-01',b:1843040726,v:1262,u:153},{m:'2026-05-01',b:1630051914,v:1187,u:263},{m:'2026-05-01',b:1773051053,v:990,u:71},{m:'2026-05-01',b:2034386119,v:845,u:51},{m:'2026-05-01',b:5043241195,v:654,u:53},{m:'2026-05-01',b:5094925195,v:541,u:11},{m:'2026-05-01',b:5057676945,v:534,u:65},
+  {m:'2026-06-01',b:5098649923,v:1298,u:4},{m:'2026-06-01',b:1843040726,v:1090,u:126},{m:'2026-06-01',b:2034435738,v:1007,u:62},{m:'2026-06-01',b:1630051914,v:749,u:172},{m:'2026-06-01',b:5043241195,v:701,u:52},{m:'2026-06-01',b:1773051053,v:653,u:53},{m:'2026-06-01',b:2034386119,v:610,u:52},{m:'2026-06-01',b:5057676945,v:425,u:54},{m:'2026-06-01',b:5094925195,v:12,u:5},
+  {m:'2026-07-01',b:5098649923,v:9504,u:2},{m:'2026-07-01',b:5100249271,v:3363,u:5},{m:'2026-07-01',b:1843040726,v:1479,u:156},{m:'2026-07-01',b:2034435738,v:1414,u:68},{m:'2026-07-01',b:5043241195,v:1045,u:58},{m:'2026-07-01',b:5094925195,v:957,u:7},{m:'2026-07-01',b:5057676945,v:689,u:59},{m:'2026-07-01',b:1773051053,v:673,u:59},{m:'2026-07-01',b:2034386119,v:659,u:47},{m:'2026-07-01',b:1630051914,v:543,u:118},
+  {m:'2026-08-01',b:5100249271,v:8188,u:3},{m:'2026-08-01',b:5094925195,v:5272,u:9},{m:'2026-08-01',b:5098649923,v:5199,u:2},{m:'2026-08-01',b:2034435738,v:1104,u:64},{m:'2026-08-01',b:1843040726,v:1051,u:132},{m:'2026-08-01',b:1773051053,v:742,u:59},{m:'2026-08-01',b:2034386119,v:741,u:51},{m:'2026-08-01',b:1630051914,v:698,u:161},{m:'2026-08-01',b:5043241195,v:693,u:46},{m:'2026-08-01',b:5057676945,v:471,u:63},
+  {m:'2026-09-01',b:5098649923,v:9132,u:1},{m:'2026-09-01',b:5094925195,v:4071,u:5},{m:'2026-09-01',b:2034435738,v:1068,u:59},{m:'2026-09-01',b:1843040726,v:830,u:123},{m:'2026-09-01',b:1630051914,v:760,u:137},{m:'2026-09-01',b:5043241195,v:663,u:47},{m:'2026-09-01',b:1773051053,v:615,u:56},{m:'2026-09-01',b:2034386119,v:486,u:50},{m:'2026-09-01',b:5057676945,v:373,u:45},{m:'2026-09-01',b:5100249271,v:2,u:1},
+];
+function mv(bid,m){const r=MONTHLY.find(d=>d.b===bid&&d.m===m);return r||{v:null,u:null};}
+
+const PORTFOLIO = [{m:'Mar 2026',l:136435,u:197},{m:'Apr 2026',l:341912,u:201},{m:'May 2026',l:352380,u:228},{m:'Jun 2026',l:305330,u:215},{m:'Jul 2026',l:333608,u:173},{m:'Aug 2026',l:300021,u:188},{m:'Sep 2026*',l:189185,u:184}];
+const PROJECTS  = [{m:'Mar 2026',l:2478473,b:14430},{m:'Apr 2026',l:6097886,b:16869},{m:'May 2026',l:6303972,b:16062},{m:'Jun 2026',l:5639349,b:15159},{m:'Jul 2026',l:5574921,b:15272},{m:'Aug 2026',l:5337590,b:14429},{m:'Sep 2026*',l:3366322,b:13112}];
+const COPY = [
+  {e:'dup_pulse_request',u:1992,t:9950},{e:'dup_pulse',u:1857,t:9034},{e:'rclick_copy',u:1280,t:17112},
+  {e:'rclick_duplicate',u:1166,t:5197},{e:'dup_board',u:1033,t:3217},{e:'copy_pulse_link',u:840,t:3025},
+  {e:'dup_group',u:780,t:2241},{e:'dup_group_req',u:527,t:1289},{e:'dup_column',u:319,t:1277},
+  {e:'dup_board_subset',u:206,t:513},{e:'dup_col_w_vals',u:179,t:482}
+];
+const GEO = [
+  {c:'Switzerland',cc:'CH',t:1966,a:368,ct:165},{c:'Singapore',cc:'SG',t:630,a:171,ct:105},{c:'Germany',cc:'DE',t:594,a:144,ct:48},
+  {c:'United States',cc:'US',t:385,a:40,ct:16},{c:'United Kingdom',cc:'GB',t:301,a:25,ct:10},{c:'Australia',cc:'AU',t:295,a:62,ct:46},
+  {c:'France',cc:'FR',t:282,a:31,ct:13},{c:'Brazil',cc:'BR',t:213,a:62,ct:24},{c:'India',cc:'IN',t:178,a:11,ct:4},
+  {c:'Canada',cc:'CA',t:170,a:14,ct:5},{c:'Argentina',cc:'AR',t:160,a:36,ct:19},{c:'Taiwan',cc:'TW',t:120,a:9,ct:6},
+  {c:'South Korea',cc:'KR',t:111,a:19,ct:10},{c:'Hong Kong',cc:'HK',t:111,a:16,ct:10},{c:'Mexico',cc:'MX',t:92,a:35,ct:14},
+  {c:'Italy',cc:'IT',t:91,a:7,ct:4},{c:'Turkey',cc:'TR',t:75,a:30,ct:21},{c:'Spain',cc:'ES',t:65,a:10,ct:2},
+  {c:'Portugal',cc:'PT',t:63,a:18,ct:7},{c:'Poland',cc:'PL',t:58,a:22,ct:9},{c:'Netherlands',cc:'NL',t:52,a:21,ct:14},
+  {c:'Czech Republic',cc:'CZ',t:52,a:30,ct:14},{c:'Thailand',cc:'TH',t:51,a:30,ct:27},{c:'Malaysia',cc:'MY',t:50,a:10,ct:7},
+  {c:'Austria',cc:'AT',t:49,a:15,ct:8},{c:'Belgium',cc:'BE',t:49,a:13,ct:1},{c:'Vietnam',cc:'VN',t:45,a:32,ct:27},
+  {c:'Bulgaria',cc:'BG',t:44,a:3,ct:1},{c:'Ireland',cc:'IE',t:44,a:22,ct:13},{c:'Peru',cc:'PE',t:42,a:12,ct:6}
+];
+const TOPUSERS = [
+  {id:61193431,name:'Goktug Akan',country:'Switzerland',days:28,cnt:3,com:0},
+  {id:63599288,name:'Guillermo Parra Ramirez',country:'Switzerland',days:23,cnt:20,com:5},
+  {id:98340126,name:'Preeti Dheda',country:'South Africa',days:22,cnt:1,com:0},
+  {id:100957254,name:'Thoni Chandra',country:'Singapore',days:22,cnt:0,com:0},
+  {id:79226279,name:'Beng Sian Ooi',country:'Malaysia',days:20,cnt:0,com:0},
+  {id:96168624,name:'Tatana Velgosova',country:'Czech Republic',days:19,cnt:0,com:0},
+  {id:76774764,name:'Anette Forsstrom',country:'Finland',days:19,cnt:1,com:0},
+  {id:71729123,name:'Daniel Bretschneider',country:'Germany',days:19,cnt:2,com:0},
+  {id:66898971,name:'Huyen Duong Thanh',country:'Singapore',days:18,cnt:11,com:4},
+  {id:61193433,name:'Justyna Ochal',country:'Switzerland',days:18,cnt:9,com:0},
+  {id:98658430,name:'Miona Jovanovic',country:'Switzerland',days:18,cnt:0,com:0},
+  {id:95601293,name:'Alfred Simroth',country:'Austria',days:18,cnt:0,com:0},
+  {id:63677759,name:'Anh Nguyen Hoai',country:'Vietnam',days:18,cnt:7,com:6},
+  {id:74106764,name:'Junghyun Lee',country:'South Korea',days:18,cnt:6,com:0},
+  {id:77688149,name:'Reto Schlegel',country:'Switzerland',days:18,cnt:2,com:0},
+  {id:72346295,name:'Buket Ozkucuk Acaroglu',country:'Turkey',days:18,cnt:2,com:1},
+  {id:64383302,name:'Olivier Thomet',country:'Switzerland',days:17,cnt:0,com:0},
+  {id:68935562,name:'Anne Kolbye',country:'Switzerland',days:17,cnt:0,com:0},
+  {id:65420302,name:'Lorena Bustos',country:'Chile',days:17,cnt:0,com:0},
+  {id:65625679,name:'Pavel Pospisil',country:'Switzerland',days:17,cnt:13,com:1},
+];
+const SESSIONS = [
+  {u:95694642,b:5098649923,d:6, s:9133,ce:0},{u:68577089,b:5094925195,d:7, s:4272,ce:0},
+  {u:73708909,b:5094925195,d:1, s:184, ce:0},{u:74776729,b:5094925195,d:2, s:161, ce:0},
+  {u:90357032,b:1630051914,d:3, s:96,  ce:9},{u:61193433,b:1667970515,d:18,s:86,  ce:92},
+  {u:102635841,b:1630051914,d:15,s:83, ce:2},{u:78936325,b:5043241195,d:13,s:80,  ce:122},
+  {u:66898971,b:2034435738,d:18,s:76,  ce:87},{u:63677759,b:2034435738,d:18,s:74, ce:29},
+  {u:90468486,b:5043241195,d:16,s:72,  ce:30},{u:61193431,b:1773051053,d:30,s:69, ce:25},
+  {u:100183540,b:1630051914,d:13,s:69, ce:0},{u:68213912,b:1773051053,d:13,s:66,  ce:642},
+  {u:63851474,b:2034435738,d:15,s:65,  ce:20},{u:102186331,b:1773051053,d:14,s:63,ce:103},
+  {u:69101689,b:2034435738,d:13,s:62,  ce:177},{u:63903240,b:1773051053,d:13,s:56,ce:401},
+  {u:68223050,b:5057676945,d:16,s:55,  ce:152},{u:105944965,b:1773051053,d:12,s:50,ce:74},
+];
+
+// ─── TABLES ───────────────────────────────────────────────────────────────────
+function typeTag(t){const m={Documents:'t-doc doc',Board:'t-brd Board',Workflows:'t-wf Workflows','Monday Workflows':'t-wf Workflows'};const[cls,label]=(m[t]||'t-brd Board').split(' ');return `<span class="tag ${cls}">${label||t}</span>`;}
+function stTag(s){return s==='deleted'?'<span class="tag t-del">deleted</span>':'<span class="tag t-brd" style="background:#e8f5e9;color:#1b5e20">active</span>';}
+
+document.getElementById('tTopUsers').innerHTML=TOPUSERS.map((u,i)=>`<tr>
+  <td class="rank">${i+1}</td>
+  <td><div class="up"><div class="av" style="background:${COLORS[i%COLORS.length]}">${ini(u.name)}</div><div><div class="un">${u.name}</div><div class="ue">ID: ${u.id}</div></div></div></td>
+  <td>${u.country}</td>
+  <td><div class="bar-i"><div class="bar-bg"><div class="bar-f" style="width:${Math.round(u.days/28*100)}%;background:#0073ea"></div></div><span class="bar-n">${u.days}/28</span></div></td>
+  <td style="color:${u.cnt>0?'#00c875':'#6b7a94'};font-weight:${u.cnt>0?700:400}">${u.cnt}</td>
+  <td>${u.com}</td>
+</tr>`).join('');
+
+const maxLoads=Math.max(...TOP15.map(b=>b.loads));
+document.getElementById('tBoards').innerHTML=TOP15.map((b,i)=>`<tr>
+  <td class="rank">${i+1}</td>
+  <td><strong>${lbl(b.id)}</strong><br><span style="font-family:monospace;font-size:10px;color:var(--text2)">${b.id}</span></td>
+  <td>${typeTag(b.type)}</td>
+  <td>${stTag(b.state)}</td>
+  <td>${fmt(b.items)}</td>
+  <td><div class="bar-i"><div class="bar-bg"><div class="bar-f" style="width:${Math.round(b.loads/maxLoads*100)}%;background:#0073ea"></div></div><span class="bar-n">${fmt(b.loads)}</span></div></td>
+  <td>${fmt(b.uu)}</td>
+  <td>${fmt(b.contrib)}</td>
+  <td><div class="bar-i"><div class="bar-bg"><div class="bar-f" style="width:${Math.round(b.ce/3396*100)}%;background:#00c875"></div></div><span class="bar-n">${fmt(b.ce)}</span></div></td>
+</tr>`).join('');
+
+const VBOARDS=[5098649923,5094925195,5100249271,2034435738,1843040726,1773051053,1630051914,5043241195,2034386119,5057676945];
+document.getElementById('tViewers').innerHTML=VBOARDS.map(bid=>{
+  const s=mv(bid,'2026-09-01'),a=mv(bid,'2026-08-01'),j=mv(bid,'2026-07-01');
+  return `<tr><td><strong>${lbl(bid)}</strong><br><span style="font-size:11px;color:var(--text2)">${bid}</span></td>
+  <td>${typeTag(btype(bid))}</td>
+  <td><strong>${fmt(s.v)}</strong></td><td>${fmt(s.u)}</td>
+  <td>${fmt(a.v)}</td><td>${fmt(a.u)}</td>
+  <td>${fmt(j.v)}</td><td>${fmt(j.u)}</td>
+  <td>${s.u&&s.u>0?(s.v/s.u).toFixed(1):'—'}</td></tr>`;
+}).join('');
+
+document.getElementById('tSessions').innerHTML=SESSIONS.map((s,i)=>{
+  const bot=s.s>500&&s.ce===0;
+  return `<tr>
+  <td class="rank">${i+1}</td>
+  <td><div class="un">${uname(s.u)}</div><div class="ue" style="font-family:monospace;font-size:10px">${s.u}</div></td>
+  <td><strong>${lbl(s.b)}</strong><br><span style="font-size:11px;color:var(--text2)">${s.b}</span></td>
+  <td>${s.d}</td><td><strong>${fmt(s.s)}</strong></td>
+  <td>${(s.s/s.d).toFixed(1)}</td>
+  <td style="color:${s.ce>0?'#00c875':'#6b7a94'};font-weight:${s.ce>0?700:400}">${fmt(s.ce)}</td>
+  <td>${bot?'<span class="tag t-bot">⚠ Automated?</span>':s.ce>0?'<span class="tag t-edt">Editor</span>':'<span class="tag t-vwr">Viewer</span>'}</td>
+</tr>`;}).join('');
+
+const maxGeo=Math.max(...GEO.map(g=>g.t));
+document.getElementById('tGeo').innerHTML=GEO.map(g=>`<tr>
+  <td><strong>${g.c}</strong></td><td style="font-size:12px;color:var(--text2)">${g.cc}</td>
+  <td><div class="bar-i"><div class="bar-bg"><div class="bar-f" style="width:${Math.round(g.t/maxGeo*100)}%;background:#0073ea"></div></div><span class="bar-n">${fmt(g.t)}</span></div></td>
+  <td>${fmt(g.a)}</td><td>${fmt(g.ct)}</td>
+  <td>${pct(g.a,g.t)}</td><td>${pct(g.ct,g.t)}</td>
+</tr>`).join('');
+
+const maxU=Math.max(...COPY.map(d=>d.u));
+document.getElementById('tCopy').innerHTML=COPY.map((d,i)=>`<tr>
+  <td class="rank">${i+1}</td>
+  <td style="font-family:monospace;font-size:12px">${d.e}</td>
+  <td><strong>${fmt(d.u)}</strong></td><td>${fmt(d.t)}</td>
+  <td>${(d.t/d.u).toFixed(1)}</td>
+  <td><div class="bar-i"><div class="bar-bg"><div class="bar-f" style="width:${Math.round(d.u/maxU*100)}%;background:#a25ddc"></div></div><span class="bar-n">${fmt(d.u)}</span></div></td>
+</tr>`).join('');
+
+// ─── NAV (lazy chart init on first tab visit) ────────────────────────────────
+const _chartInits={};
+function show(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  el.classList.add('active');
+  if(_chartInits[name]){_chartInits[name]();delete _chartInits[name];}
+  Chart.instances&&Object.values(Chart.instances).forEach(c=>{
+    const pg=c.canvas&&c.canvas.closest('.page');
+    if(pg&&pg.id==='page-'+name)c.resize();
+  });
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────────────────────
+function mkChart(id,type,data,opts={}){
+  const el=document.getElementById(id); if(!el)return;
+  const basePlugins={
+    legend:{position:opts.lp||'bottom',labels:{boxWidth:11,font:{size:10}}},
+    tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label||''}: ${(ctx.parsed.y??ctx.parsed).toLocaleString()}`}}
+  };
+  const extra=opts.extra||{};
+  const mergedPlugins=Object.assign({},basePlugins,extra.plugins||{});
+  if((extra.plugins||{}).legend)mergedPlugins.legend=Object.assign({},basePlugins.legend,extra.plugins.legend);
+  const {plugins:_,scales:extraScales,...restExtra}=extra;
+  return new Chart(el,{type,data,options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:mergedPlugins,
+    scales:type==='bar'||type==='line'?Object.assign({
+      x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10}}},
+      y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'k':v}}
+    },extraScales||{}):undefined,
+    ...restExtra
+  }});
+}
+
+// Persona donut
+mkChart('cPersona','doughnut',{labels:['Editors (714)','Passive Viewers (801)','Inactive (5,658)'],
+  datasets:[{data:[714,801,5658],backgroundColor:['#00c875','#fdab3d','#e5e8ef'],borderWidth:2,borderColor:'#fff'}]});
+
+// Boards by views
+mkChart('cBoardViews','bar',{
+  labels:TOP15.slice(0,10).map(b=>lbl(b.id)),
+  datasets:[{label:'Views L28D',data:TOP15.slice(0,10).map(b=>b.loads),backgroundColor:COLORS}]
+},{lp:'none',extra:{plugins:{legend:{display:false}}}});
+
+// Boards by contrib
+const byC=[...TOP15].sort((a,b)=>b.ce-a.ce).slice(0,10);
+mkChart('cBoardContrib','bar',{
+  labels:byC.map(b=>lbl(b.id)),
+  datasets:[{label:'Contributor Events',data:byC.map(b=>b.ce),backgroundColor:'#00c875'}]
+},{lp:'none',extra:{plugins:{legend:{display:false}}}});
+
+// Monthly views (human boards)
+const HB=[2034435738,1843040726,1773051053,1630051914,5043241195,2034386119,5057676945];
+mkChart('cMonthViews','line',{labels:MLABELS,datasets:HB.map((bid,i)=>({
+  label:lbl(bid),data:MONTHS7.map(m=>mv(bid,m).v),
+  borderColor:COLORS[i],backgroundColor:COLORS[i]+'22',
+  tension:.35,fill:false,pointRadius:4,borderWidth:2,spanGaps:true
+}))});
+
+// Monthly unique viewers
+mkChart('cMonthUniq','line',{labels:MLABELS,datasets:[1630051914,1843040726,2034435738,1773051053].map((bid,i)=>({
+  label:lbl(bid),data:MONTHS7.map(m=>mv(bid,m).u),
+  borderColor:COLORS[i],backgroundColor:COLORS[i]+'22',
+  tension:.35,fill:false,pointRadius:4,borderWidth:2,spanGaps:true
+}))});
+
+// Portfolio
+mkChart('cPortfolio','line',{labels:PORTFOLIO.map(d=>d.m),datasets:[
+  {label:'Load Events (÷1k)',data:PORTFOLIO.map(d=>Math.round(d.l/1000)),borderColor:'#0073ea',backgroundColor:'#0073ea22',tension:.35,fill:true,borderWidth:2,pointRadius:4},
+  {label:'Peak Unique Users',data:PORTFOLIO.map(d=>d.u),borderColor:'#00c875',backgroundColor:'transparent',tension:.35,fill:false,borderWidth:2,pointRadius:4}
+]});
+
+// Projects
+mkChart('cProjects','line',{labels:PROJECTS.map(d=>d.m),datasets:[
+  {label:'Load Events (÷10k)',data:PROJECTS.map(d=>Math.round(d.l/10000)),borderColor:'#fdab3d',backgroundColor:'#fdab3d22',tension:.35,fill:true,borderWidth:2,pointRadius:4},
+  {label:'Active Boards (÷100)',data:PROJECTS.map(d=>Math.round(d.b/100)),borderColor:'#e2445c',backgroundColor:'transparent',tension:.35,fill:false,borderWidth:2,pointRadius:4}
+]});
+
+// Portfolio vs Projects
+mkChart('cPvP','bar',{labels:PORTFOLIO.map(d=>d.m),datasets:[
+  {label:'Portfolio (÷1k)',data:PORTFOLIO.map(d=>Math.round(d.l/1000)),backgroundColor:'#0073ea'},
+  {label:'Projects (÷10k)',data:PROJECTS.map(d=>Math.round(d.l/10000)),backgroundColor:'#fdab3d'}
+]});
+
+// View type donut
+mkChart('cViewType','doughnut',{
+  labels:['Custom (open_board_subset)','Custom (open_board_view_ui)','Main Table Returns'],
+  datasets:[{data:[450119,350315,77405],backgroundColor:['#0073ea','#5c9bd6','#00c875'],borderWidth:2,borderColor:'#fff'}]
+});
+
+// Copy bar
+mkChart('cCopy','bar',{
+  labels:COPY.map(d=>d.e),
+  datasets:[
+    {label:'Unique Users',data:COPY.map(d=>d.u),backgroundColor:'#a25ddc'},
+    {label:'Total Events',data:COPY.map(d=>d.t),backgroundColor:'#a25ddc44'}
+  ]
+},{extra:{scales:{x:{ticks:{font:{size:9}}},y:{}}}});
+
+// Geo total
+mkChart('cGeoTotal','bar',{
+  labels:GEO.slice(0,10).map(g=>g.c),
+  datasets:[{label:'Total Members',data:GEO.slice(0,10).map(g=>g.t),backgroundColor:COLORS}]
+},{lp:'none',extra:{plugins:{legend:{display:false}}}});
+
+// Geo active
+mkChart('cGeoActive','bar',{
+  labels:GEO.slice(0,10).map(g=>g.c),
+  datasets:[
+    {label:'Active L28D',data:GEO.slice(0,10).map(g=>g.a),backgroundColor:'#00c875'},
+    {label:'Content Active',data:GEO.slice(0,10).map(g=>g.ct),backgroundColor:'#0073ea'}
+  ]
+});
+
+// Viewer trend
+mkChart('cVwTrend','line',{labels:MLABELS,datasets:[1630051914,1843040726,2034435738,1773051053].map((bid,i)=>({
+  label:lbl(bid),data:MONTHS7.map(m=>mv(bid,m).v),
+  borderColor:COLORS[i],backgroundColor:COLORS[i]+'22',
+  tension:.35,fill:false,pointRadius:4,borderWidth:2,spanGaps:true
+}))});
+
+// Unique viewers Sep
+const sepData=MONTHLY.filter(d=>d.m==='2026-09-01').sort((a,b)=>b.u-a.u);
+mkChart('cVwUniq','bar',{
+  labels:sepData.map(d=>lbl(d.b)),
+  datasets:[{label:'Unique Viewers',data:sepData.map(d=>d.u),backgroundColor:COLORS}]
+},{lp:'none',extra:{plugins:{legend:{display:false}}}});
+</script>
 </body>
 </html>
